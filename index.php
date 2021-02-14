@@ -1,10 +1,12 @@
 <?php
 require('dbconnect.php');
 
-$sql = "SELECT * FROM employees";
+$sql = "SELECT * FROM employees ORDER BY fname ASC";
 $result = mysqli_query($con, $sql);
 
 $count = mysqli_num_rows($result);
+
+$order=1;
 ?>
 
 
@@ -40,6 +42,7 @@ $count = mysqli_num_rows($result);
                         <th>นามสกุล</th>
                         <th>เพศ</th>
                         <th>ทักษะ</th>
+                        <th>แก้ไขข้อมูล</th>
                         <th>ลบข้อมูล</th>
                         <th>ลบข้อมูล(checkbox)</th>
                     </tr>
@@ -47,7 +50,7 @@ $count = mysqli_num_rows($result);
                 <tbody>
                     <?php while ($row = mysqli_fetch_assoc($result)) { ?>
                         <tr>
-                            <td><?php echo $row["id"] ?></td>
+                            <td><?php echo $order++ ?></td>
                             <td><?php echo $row["fname"] ?></td>
                             <td><?php echo $row["lname"] ?></td>
                             <td>
@@ -60,6 +63,9 @@ $count = mysqli_num_rows($result);
                                 <?php } ?>
                             </td>
                             <td><?php echo $row["skills"] ?></td>
+                            <td>
+                            <a href="editForm.php?id=<?php echo $row["id"] ?>" class="btn btn-warning">แก้ไข</a>
+                            </td>
                             <td><a href="deleteQueryString.php?idemp=<?php echo $row["id"]; ?>" class="btn btn-danger" onclick="return confirm('คุณต้องการลบข้อมูลหรือไม่')">ลบข้อมูล</a></td>
 
                             <form action="multipleDelete.php" method="POST">
@@ -80,10 +86,28 @@ $count = mysqli_num_rows($result);
         <a href="insertForm.php" class="btn btn-success">บันทึกข้อมูลพนักงาน</a>
         <?php if ($count > 0) { ?>
         <input type="submit" value="ลบข้อมูล(checkbox)" class="btn btn-danger">
+        <button class="btn btn-primary" onclick="checkAll()">เลือกทั้งหมด</button>
+        <button class="btn btn-warning" onclick="uncheckAll()">ยกเลิก</button>
         <?php } ?>
         </form>
+        
     </div>
 
 </body>
+
+<script>
+function checkAll(){
+    var form_element=document.forms[1].length;
+    for(i=0;i<form_element-1;i++){
+        document.forms[1].elements[i].checked=true
+    }
+}
+function uncheckAll(){
+    var form_element=document.forms[1].length;
+    for(i=0;i<form_element-1;i++){
+        document.forms[1].elements[i].checked=false
+    }
+}
+</script>
 
 </html>
